@@ -1,0 +1,294 @@
+COMP1010
+The Art of Computing
+COMP1511
+Programming Fundamentals
+COMP1521
+Computer Systems Fundamentals
+COMP1531
+Software Engineering Fundamentals
+COMP1911
+Computing 1A
+COMP2041
+Software Construction: Techniques and Tools
+COMP2111
+System Modelling and Design
+COMP2511
+Object-Oriented Design and Programming
+COMP2521
+Data Structures and Algorithms
+COMP3121
+Algorithms and Programming Techniques
+COMP3131
+Programming Languages and Compilers
+COMP3141
+Software System Design and Implementation
+COMP3151
+Foundations of Concurrency
+COMP3153
+Algorithmic Verification
+COMP3161
+Concepts of Programming Languages
+COMP3211
+Computer Architecture
+COMP3222
+Digital Circuits and Systems
+COMP3231
+Operating Systems
+COMP3311
+Database Systems
+COMP3331
+Computer Networks and Applications
+COMP3411
+Artificial Intelligence
+COMP3421
+Computer Graphics
+COMP3431
+Robotic Software Architecture
+COMP3511
+Human Computer Interaction
+COMP3601
+Design Project A
+COMP3821
+Extended Algorithms and Programming Techniques
+COMP3891
+Extended Operating Systems
+COMP3900
+Computer Science Project
+COMP3901
+Special Project A
+COMP3902
+Special Project B
+COMP4121
+Advanced Algorithms
+COMP4128
+Programming Challenges
+COMP4141
+Theory of Computation
+COMP4161
+Advanced Topics in Software Verification
+COMP4336
+Mobile Data Networking
+COMP4337
+Securing Fixed and Wireless Networks
+COMP4418
+Knowledge Representation and Reasoning
+COMP4511
+User Interface Design and Construction
+COMP4601
+Design Project B
+COMP4920
+Professional Issues and Ethics in Information Technology
+COMP4951
+Research Thesis A
+COMP4952
+Research Thesis B
+COMP4953
+Research Thesis C
+COMP4961
+Computer Science Thesis A
+COMP4962
+Computer Science Thesis B
+COMP4963
+Computer Science Thesis C
+COMP6080
+Web Front-End Programming
+COMP6441
+Security Engineering and Cyber Security
+COMP6443
+Web Application Security and Testing
+COMP6445
+Digital Forensics
+COMP6447
+System and Software Security Assessment
+COMP6448
+Security Engineering Masterclass
+COMP6451
+Cryptocurrency and Distributed Ledger Technologies
+COMP6452
+Software Architecture for Blockchain Applications
+COMP6714
+Information Retrieval and Web Search
+COMP6721
+(In-)Formal Methods: The Lost Art
+COMP6733
+Internet of Things Experimental Design Studio
+COMP6741
+Algorithms for Intractable Problems
+COMP6771
+Advanced C++ Programming
+COMP6841
+Extended Security Engineering and Cyber Security
+COMP6843
+Extended Web Application Security and Testing
+COMP6845
+Extended Digital Forensics and Incident Response
+COMP6991
+Solving Modern Programming Problems with Rust
+COMP9242
+Advanced Operating Systems
+COMP9301
+Cyber Security Project
+COMP9302
+Cyber Security Project B
+COMP9312
+Data Analytics for Graphs
+COMP9313
+Big Data Management
+COMP9315
+Database Systems Implementation
+COMP9319
+Web Data Compression and Search
+COMP9321
+Data Services Engineering
+COMP9323
+Software as a Service Project
+COMP9334
+Capacity Planning of Computer Systems and Networks
+COMP9417
+Machine Learning and Data Mining
+COMP9418
+Advanced Topics in Statistical Machine Learning
+COMP9444
+Neural Networks and Deep Learning
+COMP9447
+Security Engineering Workshop
+COMP9491
+Applied Artificial Intelligence
+COMP9517
+Computer Vision
+COMP9727
+Recommender Systems
+COMP4121
+Advanced Algorithms
+COMP4141
+Theory of Computation
+COMP4161
+Advanced Topics in Software Verification
+COMP4418
+Knowledge Representation and Reasoning
+COMP4511
+User Interface Design and Construction
+COMP6080
+Web Front-End Programming
+COMP6441
+Security Engineering and Cyber Security
+COMP6443
+Web Application Security and Testing
+COMP6445
+Digital Forensics
+COMP6447
+System and Software Security Assessment
+COMP6448
+Security Engineering Masterclass
+COMP6451
+Cryptocurrency and Distributed Ledger Technologies
+COMP6452
+Software Architecture for Blockchain Applications
+COMP6714
+Information Retrieval and Web Search
+COMP6721
+(In-)Formal Methods: The Lost Art
+COMP6733
+Internet of Things Experimental Design Studio
+COMP6741
+Algorithms for Intractable Problems
+COMP6771
+Advanced C++ Programming
+COMP6841
+Extended Security Engineering and Cyber Security
+COMP6843
+Extended Web Application Security and Testing
+COMP6845
+Extended Digital Forensics and Incident Response
+COMP6991
+Solving Modern Programming Problems with Rust
+COMP9020
+Foundations of Computer Science
+COMP9021
+Principles of Programming
+COMP9024
+Data Structures and Algorithms
+COMP9032
+Microprocessors and Interfacing
+COMP9044
+Software Construction: Techniques and Tools
+COMP9101
+Design and Analysis of Algorithms
+COMP9102
+Programming Languages and Compilers
+COMP9153
+Algorithmic Verification
+COMP9154
+Foundations of Concurrency
+COMP9164
+Concepts of Programming Languages
+COMP9201
+Operating Systems
+COMP9211
+Computer Architecture
+COMP9222
+Digital Circuits and Systems
+COMP9242
+Advanced Operating Systems
+COMP9283
+Extended Operating Systems
+COMP9301
+Cyber Security Project
+COMP9302
+Cyber Security Project B
+COMP9311
+Database Systems
+COMP9312
+Data Analytics for Graphs
+COMP9313
+Big Data Management
+COMP9315
+Database Systems Implementation
+COMP9319
+Web Data Compression and Search
+COMP9321
+Data Services Engineering
+COMP9323
+Software as a Service Project
+COMP9331
+Computer Networks and Applications
+COMP9334
+Capacity Planning of Computer Systems and Networks
+COMP9336
+Mobile Data Networking
+COMP9337
+Securing Fixed and Wireless Networks
+COMP9414
+Artificial Intelligence
+COMP9415
+Computer Graphics
+COMP9417
+Machine Learning and Data Mining
+COMP9418
+Advanced Topics in Statistical Machine Learning
+COMP9434
+Robotic Software Architecture
+COMP9444
+Neural Networks and Deep Learning
+COMP9447
+Security Engineering Workshop
+COMP9491
+Applied Artificial Intelligence
+COMP9511
+Human Computer Interaction
+COMP9517
+Computer Vision
+COMP9727
+Recommender Systems
+COMP9801
+Extended Design and Analysis of Algorithms
+COMP9814
+Extended Artificial Intelligence
+COMP9900
+Information Technology Project
+COMP9991
+Research Project A
+COMP9992
+Research Project B
+COMP9993
+Research Project C

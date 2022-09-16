@@ -1,0 +1,41 @@
+#!/bin/dash
+
+#initialize tigger repo
+if [ ! -d ".tigger" ]; then
+    mkdir ".tigger"
+    echo "Initialized empty tigger repository in .tigger"
+else 
+    echo "tigger-init: error: .tigger already exists"
+    exit 1
+fi
+
+#initialize file-log file
+if [ ! -f ".tigger/file-log.txt" ]; then
+    touch ".tigger/file-log.txt"
+fi
+
+for files in *; do
+    if  grep -q "FileName: $files" ".tigger/file-log.txt" ; then
+        continue
+    else 
+        echo "FileName: $files" >> ".tigger/file-log.txt"
+    fi
+done
+
+#initialize branch file
+if [ ! -f ".tigger/branches.txt" ]; then
+    touch ".tigger/branches.txt"
+    echo "master" > ".tigger/branches.txt"
+fi
+mkdir ".tigger/branch"
+mkdir ".tigger/branch/master"
+
+#initialize commit logs
+if [ ! -f ".tigger/branch/master/commit-save.txt" ]; then
+    touch ".tigger/branch/master/commit-save.txt"
+fi
+
+#initialize tigger repository
+if [ ! -d ".tigger/branch/master/index" ]; then
+    mkdir ".tigger/branch/master/index"
+fi

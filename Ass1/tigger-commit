@@ -1,0 +1,92 @@
+#!/bin/dash
+
+#if no init tigger repository
+if [ ! -d ".tigger" ]; then
+    echo "tigger-commit: error: tigger repository directory .tigger not found"
+    exit 1
+fi
+
+curr_branch="branch/$(cat ".tigger/branches.txt")"
+
+for files in *; do
+    if  grep -q "FileName: $files" ".tigger/file-log.txt" ; then
+        continue
+    else 
+        echo "FileName: $files" >> ".tigger/file-log.txt"
+    fi
+done
+
+#When missing message argument
+if [ "$1" = "-a" ]; then
+    if [ "$2" = "" ] || [ "$3" = "" ]; then
+        echo "usage: tigger-commit [-a] -m commit-message"
+        exit 1
+    fi
+else 
+    if [ "$2" = "" ]; then
+        echo "usage: tigger-commit [-a] -m commit-message"
+        exit 1
+    fi
+fi
+
+#find commit message
+if [ "$1" = "-m" ]; then
+    msg="$2"
+elif [ "$2" = "-m" ]; then
+    msg="$3"
+fi
+commitNum=0
+
+#deal with extra -a command
+if [ "$1" = "-a" ]; then
+    for indexFiles in ".tigger/$curr_branch/index"/*; do
+        tigger-add "$(basename "$indexFiles")"
+    done
+fi
+
+#Make a file to save commit msg
+if [ ! -s ".tigger/$curr_branch/commit-save.txt" ]; then
+    echo "0 $msg" >> ".tigger/$curr_branch/commit-save.txt"
+    echo "Committed as commit 0"
+else 
+    lastNum=$(tail -1 ".tigger/$curr_branch/commit-save.txt" | cut -c 1-1)
+    hasCommit=False
+    for files in ".tigger/$curr_branch/index"/*; do
+        if [ -f ".tigger/$curr_branch/commit$lastNum/$(basename "$files")" ]; then
+            diFF=$(diff "$files" ".tigger/$curr_branch/commit$lastNum/$(basename "$files")")
+            if [ "$diFF" != "" ]; then
+                hasCommit=True
+                break
+            fi
+        else 
+            hasCommit=True
+            break
+        fi
+    done
+
+    for files in ".tigger/$curr_branch/commit$lastNum"/*; do
+        if [ ! -f .tigger/"$curr_branch"/index/"$(basename "$files")" ]; then
+            hasCommit=True
+            break
+        fi
+    done
+
+    #when there is nothing to commit - ERROR msg
+    if [ $hasCommit = False ]; then
+        echo "nothing to commit"
+        exit 1
+    else 
+        commitNum=$((lastNum + 1))
+        echo "$commitNum $msg" >> ".tigger/$curr_branch/commit-save.txt"
+        echo "Committed as commit $commitNum"
+    fi
+fi
+#Normal saving in commit directory
+mkdir ".tigger/$curr_branch/commit$commitNum"
+for files in ".tigger/$curr_branch/index"/*; do
+    if [ -f "$files" ]; then
+        cat "$files" > ".tigger/$curr_branch/commit$commitNum/$(basename "$files")"
+    fi
+done
+
+

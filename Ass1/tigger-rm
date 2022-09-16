@@ -1,0 +1,125 @@
+#!/bin/dash
+
+#if no init tigger repository
+if [ ! -d ".tigger" ]; then
+    echo "tigger-remove: error: tigger repository directory .tigger not found"
+    exit 1
+fi
+
+for files in *; do
+    if  grep -q "FileName: $files" ".tigger/file-log.txt" ; then
+        continue
+    else 
+        echo "FileName: $files" >> ".tigger/file-log.txt"
+    fi
+done
+
+curr_branch="branch/$(cat ".tigger/branches.txt")"
+
+#incorrect arguments
+if [ "$2" = "--force" ]; then
+    echo "usage: tigger-rm [--force] [--cached] <filenames>"
+    exit 1
+fi
+
+#file not exist or not in the tigger repo
+for fileName1 in "$@"; do
+    if [ "$fileName1" = "--cached" ] || [ "$fileName1" = "--force" ]; then
+        continue
+    elif [ ! -f ".tigger/$curr_branch/index/$fileName1" ]; then
+        echo "tigger-rm: error: '$fileName1' is not in the tigger repository"
+        exit 1
+    fi
+done
+
+#remove file if there is force argument
+if [ "$1" = "--force" ]; then
+    if [ "$2" != "--cached" ]; then
+        for file in "$@"; do
+            if [ "$file" = "--cached" ] || [ "$file" = "--force" ]; then
+                continue
+            else
+                rm ".tigger/$curr_branch/index/$file"
+                rm "$file"
+            fi
+        done
+    else 
+        for file in "$@"; do
+            if [ "$file" = "--cached" ] || [ "$file" = "--force" ]; then
+                continue
+            else
+                rm ".tigger/$curr_branch/index/$file"
+            fi
+        done
+    fi
+fi
+
+#remove file if there is neither force nor cached argument
+if [ "$1" != "--force" ] && [ "$1" != "--cached" ] && [ "$2" != "--cached" ]; then
+    for fileName2 in "$@"; do
+        if [ "$fileName2" = "--cached" ] || [ "$fileName2" = "--force" ]; then
+            continue
+        else 
+            index_diff=$(diff "$fileName2" ".tigger/$curr_branch/index/$fileName2")
+            if [ "$index_diff" != "" ]; then
+                lastNum=$(tail -1 ".tigger/$curr_branch/commit-save.txt" | cut -c 1-1)
+                commit_diff=$(diff ".tigger/$curr_branch/index/$fileName2" ".tigger/$curr_branch/commit$lastNum/$fileName2")
+                if [ "$commit_diff" != "" ]; then
+                    echo "tigger-rm: error: '$fileName2' in index is different to both the working file and the repository"
+                    exit 1
+                else 
+                    echo "tigger-rm: error: '$fileName2' in the repository is different to the working file"
+                    exit 1
+                fi
+            else 
+                lastNum=$(tail -1 ".tigger/$curr_branch/commit-save.txt" | cut -c 1-1)
+                if [ ! -f ".tigger/$curr_branch/commit$lastNum/$fileName2" ]; then
+                    echo "tigger-rm: error: '$fileName2' has staged changes in the index"
+                    exit 1
+                else 
+                    commit_diff=$(diff ".tigger/$curr_branch/index/$fileName2" ".tigger/$curr_branch/commit$lastNum/$fileName2")
+                    if [ "$commit_diff" = "" ]; then
+                        rm "$fileName2"
+                        rm ".tigger/$curr_branch/index/$fileName2"
+                    else 
+                        echo "tigger-rm: error: '$fileName2' has staged changes in the index"
+                        exit 1
+                    fi
+                fi
+            fi
+        fi
+    done
+fi
+
+#remove file if there is no force but has cached argument
+if [ "$1" = "--cached" ]; then
+    for fileName3 in "$@"; do
+        if [ "$fileName3" = "--cached" ] || [ "$fileName3" = "--force" ]; then
+            continue
+        else
+            index_diff=$(diff "$fileName3" ".tigger/$curr_branch/index/$fileName3")     
+            if [ "$index_diff" != "" ]; then
+                lastNum=$(tail -1 ".tigger/$curr_branch/commit-save.txt" | cut -c 1-1)
+                if [ ! -f ".tigger/$curr_branch/commit$lastNum/$fileName3" ]; then
+                    echo "tigger-rm: error: '$fileName3' in index is different to both the working file and the repository"
+                    exit 1
+                else 
+                    commit_diff=$(diff ".tigger/$curr_branch/index/$fileName3" ".tigger/$curr_branch/commit$lastNum/$fileName3")
+                    if [ "$commit_diff" = "" ]; then
+                        rm ".tigger/$curr_branch/index/$fileName3"
+                    else 
+                        echo "tigger-rm: error: '$fileName3' in index is different to both the working file and the repository"
+                        exit 1
+                    fi
+                fi
+            else 
+                rm ".tigger/$curr_branch/index/$fileName3"
+            fi
+        fi
+    done
+fi
+
+
+
+
+ 

@@ -1,0 +1,51 @@
+#!/bin/dash
+
+#if no init tigger repository
+if [ ! -d ".tigger" ]; then
+    echo "tigger-checkout: error: tigger repository directory .tigger not found"
+    exit 1
+fi
+#missing arguments
+if [ "$#" -gt 1 ]; then
+    echo "usage: tigger-checkout <branch>"
+    exit 1
+fi
+#already on the branch
+curr_branch="branch/$(cat ".tigger/branches.txt")"
+if [ "branch/$1" = "$curr_branch" ]; then
+    echo "Already on '$1'"
+    exit 1
+fi
+#branch doesn't exist
+if [ ! -d ".tigger/branch/$1" ]; then
+    echo "tigger-checkout: error: unknown branch '$1'"
+    exit 1
+fi
+
+
+#the current branch has no changes staged
+#should change branch directly
+commit_diff=$(diff ".tigger/$curr_branch/commit-save.txt" ".tigger/branch/$1/commit-save.txt")
+if [ "$commit_diff" = "" ]; then
+    echo "Switched to branch '$1'"
+    echo "$1" > ".tigger/branches.txt"
+    exit 0
+fi
+
+#if there are changes maybe be overitten by the checkout
+target_branch_lastNum=$(tail -1 ".tigger/branch/$1/commit-save.txt" | cut -c 1-1)
+lastNum=$(tail -1 ".tigger/$curr_branch/commit-save.txt" | cut -c 1-1)
+
+for files in ".tigger/branch/$1/commit$target_branch_lastNum"/*; do
+    fileBase=$(basename "$files")
+    cp "$files" "$fileBase"
+done
+while read -r lines; do
+    commitNum="$(echo "$lines" | cut -c 1-1)"
+    cp -r ".tigger/$curr_branch/commit$commitNum" ".tigger/branch/$1/"
+done <".tigger/$curr_branch/commit-save.txt" 
+cat ".tigger/$curr_branch/commit-save.txt" > ".tigger/branch/$1/commit-save.txt"
+
+
+echo "Switched to branch '$1'"
+echo "$1" > ".tigger/branches.txt"

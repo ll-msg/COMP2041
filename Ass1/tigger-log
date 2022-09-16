@@ -1,0 +1,17 @@
+#!/bin/dash
+
+#if no init tigger repository
+if [ ! -d ".tigger" ]; then
+    echo "tigger-log: error: tigger repository directory .tigger not found"
+    exit 1
+fi
+#incorrect argument
+if [ "$#" -gt 0 ]; then
+    echo "usage: tigger-log"
+    exit 1
+fi
+
+
+curr_branch="branch/$(cat ".tigger/branches.txt")"
+
+tac ".tigger/$curr_branch/commit-save.txt"

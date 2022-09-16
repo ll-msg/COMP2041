@@ -1,0 +1,44 @@
+#!/bin/dash
+
+#if no init tigger repository
+if [ ! -d ".tigger" ]; then
+    echo "tigger-add: error: tigger repository directory .tigger not found"
+    exit 1
+fi
+
+for files in *; do
+    if  grep -q "FileName: $files" ".tigger/file-log.txt" ; then
+        continue
+    else 
+        echo "FileName: $files" >> ".tigger/file-log.txt"
+    fi
+done
+
+#if missing arguments
+if [ "$1" = "" ]; then
+    echo "usage: tigger-add <filenames>"
+    exit 1
+fi
+
+curr_branch="branch/$(cat ".tigger/branches.txt")"
+
+fileExist=False
+for targetFiles in "$@"; do 
+    for files in *; do
+        if [ "$files" = "$targetFiles" ]; then
+            fileExist=True
+        fi
+    done
+    #no such file exists
+    if [ "$fileExist" = False ] && [ ! -f ".tigger/$curr_branch/index/$targetFiles" ]; then
+        echo "tigger-add: error: can not open '$targetFiles'"
+        exit 1
+    fi
+    if [ "$fileExist" = True ]; then
+        cat "$targetFiles" > ".tigger/$curr_branch/index/$targetFiles"
+    else 
+        rm ".tigger/$curr_branch/index/$targetFiles"
+    fi
+    fileExist=False
+done
+

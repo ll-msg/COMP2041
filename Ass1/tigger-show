@@ -1,0 +1,53 @@
+#!/bin/dash
+
+#if no init tigger repository
+if [ ! -d ".tigger" ]; then
+    echo "tigger-show: error: tigger repository directory .tigger not found"
+    exit 1
+fi
+
+for files in *; do
+    if  grep -q "FileName: $files" ".tigger/file-log.txt" ; then
+        continue
+    else 
+        echo "FileName: $files" >> ".tigger/file-log.txt"
+    fi
+done
+
+if [ "$#" = 0 ]; then
+    echo "usage: tigger-show <commit>:<filename>"
+    exit 1
+fi
+
+if [ "$(echo "$1" | grep ":" )" = "" ]; then
+    echo "tigger-show: error: invalid object $1"
+    exit 1
+fi
+if [ "$(echo -n "$1" | tail -c 1)" = ":" ]; then
+    echo "tigger-show: error: invalid filename ''"
+    exit 1
+fi
+
+commit=$(echo "$1" | cut -d':' -f1)
+fileName=$(echo "$1" | cut -d':' -f2)
+curr_branch="branch/$(cat ".tigger/branches.txt")"
+
+if [ "$commit" = "" ]; then
+    if [ ! -f ".tigger/$curr_branch/index/$fileName" ]; then
+        echo "tigger-show: error: '$fileName' not found in index"
+        exit 1
+    fi
+    cat ".tigger/$curr_branch/index/$fileName"
+else 
+    if [ -d ".tigger/$curr_branch/commit$commit" ];then 
+        if [ ! -f ".tigger/$curr_branch/commit$commit/$fileName" ]; then
+            echo "tigger-show: error: '$fileName' not found in commit $commit"
+            exit 1
+        else
+            cat ".tigger/$curr_branch/commit$commit/$fileName"
+        fi
+    else
+        echo "tigger-show: error: unknown commit '$commit'"
+        exit 1
+    fi
+fi

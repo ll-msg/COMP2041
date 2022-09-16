@@ -1,0 +1,20 @@
+#!/bin/dash
+
+for allMusic in "$@"; do
+    for music in "$allMusic"/*; do
+        title=$(echo "$music" | awk -F" - " '{print $2}')
+        artist=$(echo "$music" | awk -F" - " '{print $3}' | sed 's/.mp3//g')
+        album=$(echo "$music"  | awk -F" - " '{print $1}' | cut -d'/' -f2)
+        year=$(echo "$album" | cut -d',' -f2 | column -t)
+        trackHelp=$(echo "$music" | awk -F" - " '{print $1}')
+       
+        if echo "$trackHelp" | grep -Fqe "//"; then
+            track=$(echo "$music" | awk -F" - " '{print $1}' | awk -F"//" '{print $2}')
+        else
+            track=$(echo "$music" | awk -F" - " '{print $1}' | cut -d'/' -f3)
+        fi
+
+        id3 -t "$title" -a "$artist" -A "$album" -y "$year" -T "$track" "$music" > /dev/null
+    done
+done
+

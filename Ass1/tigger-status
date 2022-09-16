@@ -1,0 +1,53 @@
+#!/bin/dash
+
+#if no init tigger repository
+if [ ! -d ".tigger" ]; then
+    echo "tigger-status: error: tigger repository directory .tigger not found"
+    exit 1
+fi
+
+#consider all situations of the file between the index and repository
+curr_branch="branch/$(cat ".tigger/branches.txt")"
+lastNum=$(tail -1 ".tigger/$curr_branch/commit-save.txt" | cut -c 1-1)
+sort -o .tigger/sorted-log.txt .tigger/file-log.txt
+while IFS= read -r filess; do
+    files=$(echo "$filess" | sed 's/FileName: //g')
+    if [ -f "$files" ] && [ -f ".tigger/$curr_branch/index/$files" ] && [ -f ".tigger/$curr_branch/commit$lastNum/$files" ]; then
+        index_diff=$(diff "$files" ".tigger/$curr_branch/index/$files")
+        commit_repo_diff=$(diff "$files" ".tigger/$curr_branch/commit$lastNum/$files")
+        commit_diff=$(diff ".tigger/$curr_branch/index/$files" ".tigger/$curr_branch/commit$lastNum/$files")
+        #when the file is the same as the original
+        if [ "$index_diff" = "" ] && [ "$commit_repo_diff" = "" ] && [ "$commit_diff" = "" ]; then
+            echo "$files - same as repo" 
+            #when the file has been changed and added but not committed
+        elif [ "$index_diff" = "" ] && [ "$commit_repo_diff" != "" ] && [ "$commit_diff" != "" ]; then
+            echo "$files - file changed, changes staged for commit"
+            #when the file has been changed but not added
+        elif [ "$index_diff" != "" ] && [ "$commit_repo_diff" != "" ] && [ "$commit_diff" = "" ]; then
+            echo "$files - file changed, changes not staged for commit"
+            #when the file has been added first but changed later
+        elif [ "$index_diff" != "" ] && [ "$commit_repo_diff" != "" ] && [ "$commit_diff" != "" ]; then
+            echo "$files - file changed, different changes staged for commit"
+        fi
+    #The file in the original repo has been deleted
+    elif [ ! -f "$files" ] && [ -f ".tigger/$curr_branch/index/$files" ] && [ -f ".tigger/$curr_branch/commit$lastNum/$files" ]; then
+        echo "$files - file deleted" 
+    #Both files in the index and original repo has been deleted (using tigger -rm)
+    elif [ ! -f "$files" ] && [ ! -f ".tigger/$curr_branch/index/$files" ] && [ -f ".tigger/$curr_branch/commit$lastNum/$files" ]; then
+        echo "$files - deleted"
+    elif [ -f "$files" ] && [ -f ".tigger/$curr_branch/index/$files" ] && [ ! -f ".tigger/$curr_branch/commit$lastNum/$files" ]; then
+        index_diff=$(diff "$files" ".tigger/$curr_branch/index/$files")
+        #the file has been added to the index and remains unchanged
+        if [ "$index_diff" = "" ]; then
+            echo "$files - added to index" 
+        #the file has been added to the index but unchanged
+        else 
+            echo "$files - added to index, file changed"
+        fi
+    elif [ -f "$files" ] && [ ! -f ".tigger/$curr_branch/index/$files" ]; then
+        echo "$files - untracked"
+    elif [ ! -f "$files" ] && [ -f ".tigger/$curr_branch/index/$files" ] && [ ! -f ".tigger/$curr_branch/commit$lastNum/$files" ]; then
+        echo "$files - added to index, file deleted"
+    fi
+done < ".tigger/sorted-log.txt"
+

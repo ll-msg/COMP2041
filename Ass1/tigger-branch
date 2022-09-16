@@ -1,0 +1,69 @@
+#!/bin/dash
+
+#if no init tigger repository
+if [ ! -d ".tigger" ]; then
+    echo "tigger-branch: error: tigger repository directory .tigger not found"
+    exit 1
+fi
+
+#missing arguments
+if [ "$#" = 2 ] && [ "$1" != "-d" ]; then
+    echo "usage: tigger-branch [-d] <branch>"
+    exit 1
+elif [ "$#" -gt 2 ]; then
+    echo "usage: tigger-branch [-d] <branch>"
+    exit 1
+fi
+
+curr_branch="branch/$(cat ".tigger/branches.txt")"
+lastNum=$(tail -1 ".tigger/$curr_branch/commit-save.txt" | cut -c 1-1)
+#if there hasn't been a commit before
+if [ ! -d ".tigger/$curr_branch/commit$lastNum" ]; then
+    echo "tigger-branch: error: this command can not be run until after the first commit"
+    exit 1
+fi
+
+#listing branches
+if [ "$1" = "" ]; then
+    for branches in ".tigger/branch"/*; do
+        basename "$branches"
+    done
+fi
+
+#create branches
+if [ "$#" = 1 ]; then
+    branch="$1"
+    #check if branch already exists
+    if [ -d ".tigger/branch/$branch" ]; then
+        echo "tigger-branch: error: branch '$branch' already exists"
+        exit 1
+    fi
+
+    mkdir .tigger/branch/"$branch"
+    mkdir .tigger/branch/"$branch"/index
+    touch .tigger/branch/"$branch"/commit-save.txt
+    cat ".tigger/$curr_branch/commit-save.txt" > ".tigger/branch/$branch/commit-save.txt"
+
+    cp -R ".tigger/$curr_branch/index" ".tigger/branch/$branch/"
+    start=0
+    while [ $start -le "$lastNum" ]; do
+        cp -R ".tigger/$curr_branch/commit$start" ".tigger/branch/$branch/"
+        start=$((start + 1))
+    done
+    exit 0
+fi
+
+#delete branches
+if [ "$1" = "-d" ]; then
+    branch="$2"
+    if [ "$branch" = "master" ]; then
+        echo "tigger-branch: error: can not delete branch 'master'"
+        exit 1
+    fi
+    if [ ! -d ".tigger/branch/$branch" ]; then
+        echo "tigger-branch: error: branch '$branch' doesn't exist"
+        exit 1
+    fi
+    rm -r ".tigger/branch/$branch"
+    echo "Deleted branch '$branch'"
+fi
